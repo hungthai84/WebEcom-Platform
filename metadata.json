@@ -1,0 +1,6 @@
+{
+  "name": "Stripo E-commerce",
+  "description": "A refined e-commerce site inspired by the aesthetics of modern streetwear brands, featuring a product catalog, slide-out cart, quick view modals, and Firebase integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

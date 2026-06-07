@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "An item available for purchase in the store.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "The name of the product." },
+        "price": { "type": "number", "description": "The price of the product." },
+        "description": { "type": "string", "description": "A detailed description of the product." },
+        "imageUrl": { "type": "string", "description": "A URL to the product image." },
+        "category": { "type": "string", "description": "The category the product belongs to (e.g., 'tops', 'bottoms', 'accessories')." },
+        "stock": { "type": "integer", "description": "The current stock level." },
+        "isGift": { "type": "boolean", "description": "Whether the item is a gift." }
+      },
+      "required": ["name", "price", "imageUrl", "category"]
+    },
+    "CartItem": {
+      "title": "Cart Item",
+      "description": "An item added to a user's shopping cart.",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string", "description": "The ID of the product." },
+        "quantity": { "type": "integer", "description": "The quantity of the item." },
+        "addedAt": { "type": "string", "format": "date-time", "description": "When the item was added to the cart." }
+      },
+      "required": ["productId", "quantity", "addedAt"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile information.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "description": "Full email" },
+        "displayName": { "type": "string", "description": "Full name" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation date" }
+      },
+      "required": ["email"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "A collection of all products available."
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile data."
+    },
+    "/users/{userId}/cart/{itemId}": {
+      "schema": "CartItem",
+      "description": "The user's shopping cart items."
+    }
+  }
+}
