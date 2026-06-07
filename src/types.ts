@@ -24,4 +24,4 @@ export interface UserProfile {
   createdAt: string;
 }
 
-export type ViewState = 'home' | 'products' | 'gifts' | 'events' | 'admin';
+export type ViewState = 'home' | 'products' | 'gifts' | 'events';

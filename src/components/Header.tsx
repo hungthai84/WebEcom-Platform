@@ -1,4 +1,4 @@
-import { ChevronDown, ShoppingBag, User } from "lucide-react";
+import { ShoppingBag, Sparkles, User as UserIcon } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { signInWithGoogle, auth } from "../lib/firebase";
 import { useState, useEffect } from "react";
@@ -8,163 +8,122 @@ import { ViewState } from "../types";
 interface HeaderProps {
   currentView: ViewState;
   setView: (view: ViewState) => void;
+  onAppointmentClick: () => void;
 }
 
-import { ChevronDown, ShoppingBag, User, Menu, X } from "lucide-react";
-import { useCart } from "../context/CartContext";
-import { signInWithGoogle, auth } from "../lib/firebase";
-import { useState, useEffect } from "react";
-import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
-import { ViewState } from "../types";
-import { motion, AnimatePresence } from "motion/react";
-
-interface HeaderProps {
-  currentView: ViewState;
-  setView: (view: ViewState) => void;
-}
-
-export function Header({ currentView, setView }: HeaderProps) {
+export function Header({ currentView, setView, onAppointmentClick }: HeaderProps) {
   const { setIsCartOpen, totalItems } = useCart();
   const [user, setUser] = useState<FirebaseUser | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => setUser(u));
     return () => unsubscribe();
   }, []);
 
-  const navItems: { label: string; view: ViewState }[] = [
-    { label: "Trang Chủ", view: "home" },
-    { label: "Sản Phẩm", view: "products" },
-    { label: "Quà Tặng", view: "gifts" },
-    { label: "Sự Kiện", view: "events" },
-    { label: "Quản Lý", view: "admin" },
+  const menuItems: { label: string; view: ViewState }[] = [
+    { label: "Home", view: "home" },
+    { label: "About", view: "events" },
+    { label: "Service", view: "products" },
+    { label: "Pricing", view: "gifts" },
   ];
 
   return (
-    <>
-      <header className="flex justify-between items-center py-6 px-12 top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-50 sticky">
-        {/* Logo */}
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView('home')}>
-          <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center text-white font-bold relative overflow-hidden">
-            <span className="text-xl tracking-tighter">S</span>
+    <div className="absolute top-6 left-0 right-0 z-50 px-6 sm:px-10 max-w-[1400px] mx-auto w-full">
+      <header className="w-full bg-white/15 backdrop-blur-2xl border border-white/20 rounded-[24px] px-6 py-4 flex items-center justify-between shadow-lg relative">
+        
+        {/* Skinova Logo with customized petal ornament */}
+        <div 
+          className="flex items-center gap-2 cursor-pointer group" 
+          onClick={() => {
+            setView('home');
+            document.querySelector('.overflow-y-auto')?.scrollTo(0, 0);
+          }}
+        >
+          {/* Aesthetic Petal Icon */}
+          <div className="w-7 h-7 relative flex items-center justify-center text-white">
+            <svg 
+              viewBox="0 0 100 100" 
+              className="w-full h-full fill-current drop-shadow-md text-white/90 group-hover:rotate-45 transition-transform duration-700 ease-out"
+            >
+              {/* Modern elegant geometric double-clover/flower */}
+              <path d="M 50,50 C 35,35 15,35 15,50 C 15,65 35,65 50,50 Z" />
+              <path d="M 50,50 C 65,35 85,35 85,50 C 85,65 65,65 50,50 Z" />
+              <path d="M 50,50 C 35,15 35,35 50,15 C 65,35 65,15 50,50 Z" />
+              <path d="M 50,50 C 35,85 35,65 50,85 C 65,65 65,85 50,50 Z" />
+              {/* Small center core */}
+              <circle cx="50" cy="50" r="5" className="fill-white" />
+            </svg>
           </div>
-          <span className="text-2xl font-bold tracking-tight uppercase">stripo</span>
+          <span className="text-xl md:text-2xl font-serif tracking-[0.1em] font-medium text-white uppercase select-none">
+            SKINOVA
+          </span>
         </div>
 
-        {/* Central Nav Removed as per request to move to sidebar top */}
-        <div className="hidden lg:block"></div>
+        {/* Center menu */}
+        <nav className="hidden md:flex items-center gap-8 md:gap-10">
+          {menuItems.map((item) => (
+            <button
+              key={item.view}
+              onClick={() => {
+                setView(item.view);
+                document.querySelector('.overflow-y-auto')?.scrollTo(0, 0);
+              }}
+              className={`text-sm tracking-wide font-sans cursor-pointer transition-all ${
+                currentView === item.view 
+                  ? "text-white font-medium drop-shadow-md" 
+                  : "text-white/70 hover:text-white"
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
 
-        {/* Right Menu */}
-        <div className="flex items-center gap-6">
+        {/* Right tools and APPOINTMENT */}
+        <div className="flex items-center gap-4 sm:gap-6">
+          
+          {/* Cart Bag Icon with Glass styling */}
           <button 
             id="cart-button"
             onClick={() => setIsCartOpen(true)}
-            className="relative cursor-pointer hover:scale-110 transition-transform p-1"
+            className="relative cursor-pointer hover:scale-105 active:scale-95 transition-all p-2 bg-white/10 hover:bg-white/20 rounded-full border border-white/10"
           >
-            <ShoppingBag className="w-5 h-5 text-gray-700" />
+            <ShoppingBag className="w-4 h-4 text-white" />
             {totalItems > 0 && (
-              <span className="absolute -top-1 -right-2 bg-black text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold font-mono">
+              <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold font-mono border border-white">
                 {totalItems}
               </span>
             )}
           </button>
-          
-          <div className="h-4 w-px bg-gray-200"></div>
-          
-          <button 
-            onClick={() => setIsSidebarOpen(true)}
-            className="p-1 hover:scale-110 transition-transform"
+
+          {/* User Signin / User Info with Glass styling */}
+          {user ? (
+            <div className="flex items-center gap-2 cursor-pointer p-1 pr-3 bg-white/10 border border-white/10 rounded-full hover:bg-white/20 transition-all">
+              <div className="w-6 h-6 rounded-full overflow-hidden border border-white/30">
+                 <img src={user.photoURL || ''} alt="User Avatar" className="w-full h-full object-cover" />
+              </div>
+              <span className="text-[10px] font-mono tracking-wider text-white hidden sm:inline">{user.displayName?.split(' ')[0]}</span>
+            </div>
+          ) : (
+            <button 
+              id="login-button"
+              onClick={signInWithGoogle}
+              className="text-[10px] uppercase font-mono tracking-widest text-white hover:text-white/80 transition-colors p-2 bg-white/10 hover:bg-white/20 rounded-full border border-white/10"
+              title="Đăng nhập"
+            >
+              <UserIcon className="w-4 h-4" />
+            </button>
+          )}
+
+          {/* Majestic Appointment Button */}
+          <button
+            onClick={onAppointmentClick}
+            className="bg-white hover:bg-white/95 text-black hover:scale-103 active:scale-97 transition-all rounded-[10px] py-2 md:py-2.5 px-4 md:px-5 text-xs font-sans tracking-wide font-medium shadow-md uppercase shrink-0 cursor-pointer"
           >
-            <Menu className="w-6 h-6 text-gray-700" />
+            APPOINTMENT
           </button>
         </div>
       </header>
-
-      {/* Sidebar Navigation */}
-      <AnimatePresence>
-        {isSidebarOpen && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsSidebarOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]"
-            />
-            <motion.div 
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-2 right-2 bottom-2 w-full max-w-sm bg-white rounded-2xl z-[101] shadow-2xl flex flex-col overflow-hidden"
-            >
-              <div className="p-8 flex justify-between items-center border-b border-gray-50">
-                <span className="text-xs font-mono tracking-widest text-gray-400 uppercase">Danh Mục</span>
-                <button 
-                  onClick={() => setIsSidebarOpen(false)}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-
-              <nav className="flex-1 p-8 space-y-6">
-                {navItems.map((item) => (
-                  <motion.button
-                    key={item.view}
-                    whileHover={{ x: 10 }}
-                    onClick={() => {
-                      setView(item.view);
-                      setIsSidebarOpen(false);
-                      document.querySelector('.overflow-y-auto')?.scrollTo(0, 0);
-                    }}
-                    className={`block text-4xl font-display font-bold uppercase tracking-tighter w-full text-left transition-colors ${
-                      currentView === item.view ? "text-black" : "text-gray-200 hover:text-black"
-                    }`}
-                  >
-                    {item.label}
-                  </motion.button>
-                ))}
-                
-                <div className="pt-8 space-y-4">
-                   <div className="text-[10px] font-mono tracking-widest text-gray-400 uppercase mb-4">Tài Khoản</div>
-                   {user ? (
-                     <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-gray-100 overflow-hidden ring-2 ring-gray-50">
-                           <img src={user.photoURL || ''} alt="" className="w-full h-full object-cover" />
-                        </div>
-                        <div className="flex flex-col">
-                           <span className="text-sm font-medium">{user.displayName}</span>
-                           <span className="text-[10px] text-gray-400 uppercase tracking-widest font-mono">Xem Hồ Sơ</span>
-                        </div>
-                     </div>
-                   ) : (
-                     <button 
-                        onClick={() => {
-                          signInWithGoogle();
-                          setIsSidebarOpen(false);
-                        }}
-                        className="flex items-center gap-2 text-sm font-mono uppercase tracking-widest hover:underline"
-                     >
-                        <User size={16} />
-                        Đăng Nhập
-                     </button>
-                   )}
-                </div>
-              </nav>
-
-              <div className="p-8 border-t border-gray-50 bg-gray-50/50">
-                <div className="text-[10px] font-mono tracking-widest text-gray-400 uppercase mb-4">Theo Dõi Chúng Tôi</div>
-                <div className="flex gap-6 mt-4">
-                  <a href="#" className="text-xs font-mono uppercase tracking-widest hover:text-black transition-colors">Instagram</a>
-                  <a href="#" className="text-xs font-mono uppercase tracking-widest hover:text-black transition-colors">Facebook</a>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </>
+    </div>
   );
 }
